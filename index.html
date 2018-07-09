@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自定义事件的绑定和派发</title>
+</head>
+<body>
+  <button id="btn1">清除所有alert</button>
+  <button id="btn2">清除第一个alert</button>
+
+  <script src="./script/01.js"></script>
+  <script>
+    // =============== Test start ===============
+    const oBtn1 = document.getElementById('btn1');
+    const oBtn2 = document.getElementById('btn2');
+
+    const fn1 = () => {
+      alert('第一个弹出');
+    }
+    const fn2 = () => {
+      alert('第二个弹出');
+    }
+    Event.addEvent('alert', fn1);
+    Event.addEvent('alert', fn2);
+
+    oBtn1.addEventListener('click', fn1);
+
+    oBtn1.addEventListener('click', () => {
+      Event.removeEvent('alert');
+      alert('所有alert事件清除成功!');
+      oBtn2.style.display = 'none';
+    });
+
+    oBtn2.addEventListener('click', () => {
+      Event.removeEvent('alert', fn1);
+      alert('第一个alert清除成功');
+    });
+
+    // 点击页面的其他地方依次触发fn1、fn2
+    // @link RegExp http://www.w3school.com.cn/jsref/jsref_regexp_i.asp
+    document.addEventListener('click', e => {
+      e = e || window.event;
+      const target = e.target || e.srcElement;
+      const regExp = /input|button/i;
+      
+      // 当前点击的对象不是input、button时
+      if (!target || !regExp.test(target.tagName)) {
+        Event.triggerEvent('alert');
+      }
+    })
+    // =============== Test end ===============
+  </script>
+</body>
+</html>
